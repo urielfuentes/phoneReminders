@@ -5,7 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'models/chore.dart';
 
 const boxName = "chores";
-
+const applicationName = "chores Reminder";
 void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(ChoreAdapter());
