@@ -1,4 +1,7 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:choresreminder/main.dart';
+import 'package:choresreminder/updateChore/updateChore.dart';
 import 'package:choresreminder/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -29,32 +32,46 @@ class Home extends StatelessWidget {
                     itemCount: box.length,
                     itemBuilder: (context, index) {
                       Chore chore = box.getAt(index)!;
-                      return Card(
-                          margin: const EdgeInsets.only(bottom: 15),
-                          color: getBackgroundColor(chore.expiryDate),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildDivider(),
-                                Text(chore.name,
-                                    style:
-                                        Theme.of(context).textTheme.headline5),
-                                if (chore.description.isNotEmpty)
-                                  _buildDivider(),
-                                if (chore.description.isNotEmpty)
-                                  Text(chore.description,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1),
-                                _buildDivider(),
-                                Text(
-                                  getFormattedDate(chore.expiryDate),
-                                )
-                              ],
-                            ),
-                          ));
+                      String choreString;
+                      if (chore.description.isNotEmpty) {
+                        choreString =
+                            "${chore.description}\n ${getFormattedDate(chore.expiryDate)}";
+                      } else {
+                        choreString = getFormattedDate(chore.expiryDate);
+                      }
+
+                      return Padding(
+                        padding: EdgeInsets.only(top: 8),
+                        child: ListTile(
+                          tileColor: getBackgroundColor(chore.expiryDate),
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8))),
+                          title: Text(chore.name,
+                              style: Theme.of(context).textTheme.headline5),
+                          subtitle: Text(choreString),
+                          isThreeLine: true,
+                          trailing: PopupMenuButton(
+                            itemBuilder: (ctx) => [
+                              PopupMenuItem(
+                                child: const Text("Eliminar"),
+                                onTap: () {
+                                  box.deleteAt(index);
+                                },
+                              ),
+                              PopupMenuItem(
+                                  child: const Text("Editar"),
+                                  onTap: () => Future(() =>
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) => UpdateChore(
+                                                  choreKey: box.keyAt(index),
+                                                )),
+                                      ))),
+                            ],
+                          ),
+                        ),
+                      );
                     }),
               );
             }),
@@ -63,9 +80,7 @@ class Home extends StatelessWidget {
             return FloatingActionButton(
               child: const Icon(Icons.add),
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => AddChore()),
-                );
+                Navigator.pushNamed(context, '/add');
               },
             );
           },

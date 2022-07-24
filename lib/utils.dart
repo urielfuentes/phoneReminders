@@ -99,3 +99,20 @@ String getDays(DateTime date, Duration duration) {
   }
   return result;
 }
+
+List<int> getScopeValues(DateTime date) {
+  var now = DateTime.now();
+  var scopesList = [0, 0, 0, 0];
+  var yesterdayAtMidNight = DateTime(now.year, now.month, now.day, 0, 0);
+  var midNightDate = DateTime(date.year, date.month, date.day, 0, 0);
+  var timeRem = midNightDate.difference(yesterdayAtMidNight);
+  var daysProcessed = timeRem.inDays;
+  scopesList[3] = (daysProcessed / 365).floor();
+  daysProcessed -= (daysProcessed / 365).floor() * 365;
+  scopesList[2] = (daysProcessed / 30).floor();
+  daysProcessed -= (daysProcessed / 30).floor() * 30;
+  scopesList[1] = (daysProcessed / 7).floor();
+  daysProcessed -= (daysProcessed / 7).floor() * 7;
+  scopesList[0] = daysProcessed;
+  return scopesList;
+}

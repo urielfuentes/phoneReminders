@@ -1,5 +1,6 @@
 import 'package:choresreminder/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -108,11 +109,14 @@ class _AddChoreState extends State<AddChore> {
                   margin: const EdgeInsets.only(right: 8),
                   child: TextFormField(
                     keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
                     initialValue: "",
                     validator: timeQuantityValidator,
                     onChanged: (value) {
                       setState(() {
-                        timeQuantity = int.parse(value);
+                        timeQuantity = int.tryParse(value) ?? timeQuantity;
                       });
                     },
                   ),
