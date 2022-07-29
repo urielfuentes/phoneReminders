@@ -62,7 +62,12 @@ class _AddChoreState extends State<AddChore> {
           expiryTime = today.add(Duration(days: timeQuantity * 365));
           break;
       }
-      choresBox.add(Chore(name, description, expiryTime));
+      if (choresBox.keys.isNotEmpty) {
+        choresBox.add(
+            Chore(choresBox.keys.first + 1, name, description, expiryTime));
+      } else {
+        choresBox.add(Chore(0, name, description, expiryTime));
+      }
       Navigator.of(context).pop();
     }
   }

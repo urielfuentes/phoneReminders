@@ -2,7 +2,7 @@
 
 import 'package:choresreminder/main.dart';
 import 'package:choresreminder/updateChore/updateChore.dart';
-import 'package:choresreminder/utils.dart';
+import 'package:choresreminder/services/date_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:choresreminder/models/chore.dart';

@@ -37,6 +37,7 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   flutter_local_notifications: ^9.7.0
+  android_alarm_manager_plus: ^2.0.6
 
 dev_dependencies:
   flutter_test:

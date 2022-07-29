@@ -17,21 +17,24 @@ class ChoreAdapter extends TypeAdapter<Chore> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Chore(
-      fields[0] as String,
+      fields[0] as int,
       fields[1] as String,
-      fields[2] as DateTime,
+      fields[2] as String,
+      fields[3] as DateTime,
     );
   }
 
   @override
   void write(BinaryWriter writer, Chore obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.name)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.description)
+      ..write(obj.name)
       ..writeByte(2)
+      ..write(obj.description)
+      ..writeByte(3)
       ..write(obj.expiryDate);
   }
 

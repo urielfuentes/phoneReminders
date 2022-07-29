@@ -4,11 +4,13 @@ part 'chore.g.dart';
 @HiveType(typeId: 0)
 class Chore {
   @HiveField(0)
-  String name;
+  int id;
   @HiveField(1)
-  String description;
+  String name;
   @HiveField(2)
+  String description;
+  @HiveField(3)
   DateTime expiryDate;
 
-  Chore(this.name, this.description, this.expiryDate);
+  Chore(this.id, this.name, this.description, this.expiryDate);
 }

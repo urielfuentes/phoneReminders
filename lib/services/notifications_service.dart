@@ -1,21 +1,23 @@
+import 'package:choresreminder/services/date_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../main.dart';
+import '../models/chore.dart';
 
-class NotificationServiceImpl {
+class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
   final String notificationsChannel = "choresChannel";
 
-  void init(
-      Future<dynamic> Function(int, String?, String?, String?)? onDidReceive) {
-    final AndroidInitializationSettings initializationSettingsAndroid =
-        const AndroidInitializationSettings('app_icon');
+  void init() {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
 
-    final InitializationSettings initializationSettings =
+    const InitializationSettings initializationSettings =
         InitializationSettings(
             android: initializationSettingsAndroid, iOS: null, macOS: null);
 
@@ -42,5 +44,22 @@ class NotificationServiceImpl {
               notificationsChannel, applicationName,
               channelDescription: 'To remind you about upcoming chores')),
     );
+  }
+
+  static Future<void> checkForExpiredChores() async {
+    print("In notification callback.");
+    var notifService = NotificationService();
+    var now = DateTime.now();
+    var yesterdayAtMidNight = DateTime(now.year, now.month, now.day, 0, 1);
+    await Hive.initFlutter();
+    await Hive.openBox<Chore>(boxName);
+    var box = Hive.box<Chore>(boxName);
+    List<Chore> chores = box.values.toList();
+    List<Chore> expiredChores = chores
+        .where((chore) => chore.expiryDate.isBefore(yesterdayAtMidNight))
+        .toList();
+    for (var chore in expiredChores) {
+      notifService.showNotification(chore.id, getNotifMessage(chore));
+    }
   }
 }

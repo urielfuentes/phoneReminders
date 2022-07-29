@@ -1,3 +1,5 @@
+import '../models/chore.dart';
+
 String getFormattedDate(DateTime date) {
   String result = "";
   var now = DateTime.now();
@@ -115,4 +117,18 @@ List<int> getScopeValues(DateTime date) {
   daysProcessed -= (daysProcessed / 7).floor() * 7;
   scopesList[0] = daysProcessed;
   return scopesList;
+}
+
+String getNotifMessage(Chore chore) {
+  var dateMessage = getFormattedDate(chore.expiryDate);
+  var notifMessage = StringBuffer("Recordatorio: ")..write(chore.name);
+
+  if (dateMessage != "Hoy.") {
+    notifMessage.write(". Venció hace: ");
+  } else {
+    notifMessage.write(". Vence: ");
+  }
+  notifMessage.write(dateMessage);
+
+  return notifMessage.toString();
 }

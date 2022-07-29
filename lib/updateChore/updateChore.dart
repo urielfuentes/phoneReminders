@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../models/chore.dart';
-import '../utils.dart';
+import '../services/date_service.dart';
 
 enum TimeScope { days, weeks, months, years }
 
@@ -39,7 +39,8 @@ class _UpdateChoreState extends State<UpdateChore> {
       var today = DateTime(now.year, now.month, now.day, 0, 0);
       var expiryTime = today
           .add(Duration(days: (days + weeks * 7 + months * 30 + years * 365)));
-      choresBox.put(widget.choreKey, Chore(name, description, expiryTime));
+      choresBox.put(widget.choreKey,
+          Chore(widget.choreKey, name, description, expiryTime));
       Navigator.of(context).pop();
     }
   }
