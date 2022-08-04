@@ -1,10 +1,12 @@
-import 'package:choresreminder/addChore/addChore.dart';
-import 'package:choresreminder/updateChore/updateChore.dart';
+import 'package:choresreminder/reminders/addChore/addChore.dart';
+import 'package:choresreminder/reminders/home/homeReminders.dart';
+import 'package:choresreminder/reminders/updateChore/updateChore.dart';
 
 import 'home/home.dart';
 
 var appRoutes = {
   '/': (context) => const Home(),
-  '/add': (context) => AddChore(),
-  '/update': (context) => UpdateChore(),
+  '/reminders': (context) => const HomeReminders(),
+  '/addReminder': (context) => AddChore(),
+  '/updateReminder': (context) => UpdateChore(),
 };

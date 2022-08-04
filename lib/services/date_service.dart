@@ -2,11 +2,12 @@ import '../models/chore.dart';
 
 String getFormattedDate(DateTime date) {
   String result = "";
+
   var now = DateTime.now();
   var yesterdayAtMidNight = DateTime(now.year, now.month, now.day, 0, 0);
   var midNightDate = DateTime(date.year, date.month, date.day, 0, 0);
   var timeRem = midNightDate.difference(yesterdayAtMidNight);
-  result = getIfYears(timeRem);
+  result += getIfYears(timeRem);
   if (result.isEmpty) {
     result = getIfMonths(timeRem);
   }
@@ -15,6 +16,13 @@ String getFormattedDate(DateTime date) {
   }
   if (result.isEmpty) {
     result = getDays(date, timeRem);
+  }
+
+  if (midNightDate == yesterdayAtMidNight ||
+      yesterdayAtMidNight.isAfter(midNightDate)) {
+    result = "Hace: $result";
+  } else {
+    result = "En: $result";
   }
   result += ".";
   return result;

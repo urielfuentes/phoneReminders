@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../models/chore.dart';
-import '../services/date_service.dart';
+import '../../models/chore.dart';
+import '../../services/date_service.dart';
 
 enum TimeScope { days, weeks, months, years }
 

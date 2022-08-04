@@ -5,7 +5,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../models/chore.dart';
+import '../../models/chore.dart';
 
 enum TimeScope { days, weeks, months, years }
 
