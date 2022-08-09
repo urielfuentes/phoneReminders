@@ -105,7 +105,7 @@ class _UpdateRecordState extends State<UpdateRecord> {
               )
             ]),
             Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(top: 12),
               child: OutlinedButton(
                 onPressed: onFormSubmit,
                 child: const Text("Guardar"),

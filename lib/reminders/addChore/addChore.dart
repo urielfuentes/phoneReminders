@@ -146,9 +146,12 @@ class _AddChoreState extends State<AddChore> {
                 ),
               ],
             ),
-            OutlinedButton(
-              onPressed: onFormSubmit,
-              child: const Text("Guardar"),
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: OutlinedButton(
+                onPressed: onFormSubmit,
+                child: const Text("Guardar"),
+              ),
             ),
           ],
         ),

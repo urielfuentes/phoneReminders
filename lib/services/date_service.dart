@@ -21,10 +21,9 @@ String getFormattedDate(DateTime date, {bool isReminder = true}) {
   }
 
   if (isReminder) {
-    if (midNightDate == yesterdayAtMidNight ||
-        yesterdayAtMidNight.isAfter(midNightDate)) {
+    if (yesterdayAtMidNight.isAfter(midNightDate)) {
       result = "Hace: $result";
-    } else {
+    } else if (yesterdayAtMidNight.isBefore(midNightDate)) {
       result = "En: $result";
     }
   }
@@ -149,7 +148,7 @@ String getNotifMessage(Chore chore) {
   var notifMessage = StringBuffer("Recordatorio: ")..write(chore.name);
 
   if (dateMessage != "Hoy.") {
-    notifMessage.write(". Venció hace: ");
+    notifMessage.write(". Venció ");
   } else {
     notifMessage.write(". Vence: ");
   }

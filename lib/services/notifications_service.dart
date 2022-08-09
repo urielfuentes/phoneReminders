@@ -52,6 +52,9 @@ class NotificationService {
     var now = DateTime.now();
     var yesterdayAtMidNight = DateTime(now.year, now.month, now.day, 0, 1);
     await Hive.initFlutter();
+    if (!Hive.isAdapterRegistered(0)) {
+      Hive.registerAdapter(ChoreAdapter());
+    }
     await Hive.openBox<Chore>(choresBoxName);
     var box = Hive.box<Chore>(choresBoxName);
     List<Chore> chores = box.values.toList();

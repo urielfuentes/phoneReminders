@@ -79,9 +79,12 @@ class _AddRecordState extends State<AddRecord> {
                     description = value;
                   });
                 }),
-            OutlinedButton(
-              onPressed: onFormSubmit,
-              child: const Text("Guardar"),
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: OutlinedButton(
+                onPressed: onFormSubmit,
+                child: const Text("Guardar"),
+              ),
             ),
           ],
         ),

@@ -35,7 +35,7 @@ void main() async {
   await Hive.openBox<Record>(recordsBoxName);
   runApp(const MyApp());
   const int choresRemID = 0;
-  await AndroidAlarmManager.periodic(const Duration(days: 1), choresRemID,
+  await AndroidAlarmManager.periodic(const Duration(minutes: 1), choresRemID,
       NotificationService.checkForExpiredChores);
 }
 
