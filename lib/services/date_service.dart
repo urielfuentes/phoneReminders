@@ -1,6 +1,8 @@
+import 'package:intl/intl.dart';
+
 import '../models/chore.dart';
 
-String getFormattedDate(DateTime date) {
+String getFormattedDate(DateTime date, {bool isReminder = true}) {
   String result = "";
 
   var now = DateTime.now();
@@ -18,11 +20,13 @@ String getFormattedDate(DateTime date) {
     result = getDays(date, timeRem);
   }
 
-  if (midNightDate == yesterdayAtMidNight ||
-      yesterdayAtMidNight.isAfter(midNightDate)) {
-    result = "Hace: $result";
-  } else {
-    result = "En: $result";
+  if (isReminder) {
+    if (midNightDate == yesterdayAtMidNight ||
+        yesterdayAtMidNight.isAfter(midNightDate)) {
+      result = "Hace: $result";
+    } else {
+      result = "En: $result";
+    }
   }
   result += ".";
   return result;
@@ -110,13 +114,26 @@ String getDays(DateTime date, Duration duration) {
   return result;
 }
 
+String getDateStringRecord(DateTime date) {
+  DateFormat formatter = DateFormat('dd/MM/yy');
+  String formatted = formatter.format(date);
+  String dateString =
+      "$formatted - ${getFormattedDate(date, isReminder: false)}";
+  return dateString;
+}
+
 List<int> getScopeValues(DateTime date) {
   var now = DateTime.now();
   var scopesList = [0, 0, 0, 0];
   var yesterdayAtMidNight = DateTime(now.year, now.month, now.day, 0, 0);
   var midNightDate = DateTime(date.year, date.month, date.day, 0, 0);
-  var timeRem = midNightDate.difference(yesterdayAtMidNight);
-  var daysProcessed = timeRem.inDays;
+  Duration timeDiff;
+  if (midNightDate.isAfter(yesterdayAtMidNight)) {
+    timeDiff = midNightDate.difference(yesterdayAtMidNight);
+  } else {
+    timeDiff = yesterdayAtMidNight.difference(midNightDate);
+  }
+  var daysProcessed = timeDiff.inDays;
   scopesList[3] = (daysProcessed / 365).floor();
   daysProcessed -= (daysProcessed / 365).floor() * 365;
   scopesList[2] = (daysProcessed / 30).floor();
@@ -128,7 +145,7 @@ List<int> getScopeValues(DateTime date) {
 }
 
 String getNotifMessage(Chore chore) {
-  var dateMessage = getFormattedDate(chore.expiryDate);
+  var dateMessage = getFormattedDate(chore.expiryDate, isReminder: true);
   var notifMessage = StringBuffer("Recordatorio: ")..write(chore.name);
 
   if (dateMessage != "Hoy.") {

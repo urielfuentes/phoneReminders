@@ -34,7 +34,7 @@ class _UpdateChoreState extends State<UpdateChore> {
 
   void onFormSubmit() {
     if (widget.formKey.currentState?.validate() ?? false) {
-      Box<Chore> choresBox = Hive.box<Chore>(boxName);
+      Box<Chore> choresBox = Hive.box<Chore>(choresBoxName);
       var now = DateTime.now();
       var today = DateTime(now.year, now.month, now.day, 0, 0);
       var expiryTime = today
@@ -47,7 +47,7 @@ class _UpdateChoreState extends State<UpdateChore> {
 
   @override
   void initState() {
-    var box = Hive.box<Chore>(boxName);
+    var box = Hive.box<Chore>(choresBoxName);
     Chore updateChore;
     updateChore = box.get(widget.choreKey)!;
     List<int> timeScopes = getScopeValues(updateChore.expiryDate);

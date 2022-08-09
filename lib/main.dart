@@ -1,5 +1,6 @@
 import 'dart:isolate';
 
+import 'package:choresreminder/models/record.dart';
 import 'package:choresreminder/routes.dart';
 import 'package:choresreminder/theme.dart';
 import 'package:choresreminder/services/notifications_service.dart';
@@ -8,8 +9,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'models/chore.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 
-const boxName = "chores";
-const applicationName = "Chores Reminder";
+const choresBoxName = "chores";
+const recordsBoxName = "records";
+const applicationName = "Reminders and Records";
 
 void printHello() {
   final DateTime now = DateTime.now();
@@ -23,8 +25,14 @@ void main() async {
   notifService.init();
   await AndroidAlarmManager.initialize();
   await Hive.initFlutter();
-  Hive.registerAdapter(ChoreAdapter());
-  await Hive.openBox<Chore>(boxName);
+  if (!Hive.isAdapterRegistered(0)) {
+    Hive.registerAdapter(ChoreAdapter());
+  }
+  await Hive.openBox<Chore>(choresBoxName);
+  if (!Hive.isAdapterRegistered(1)) {
+    Hive.registerAdapter(RecordAdapter());
+  }
+  await Hive.openBox<Record>(recordsBoxName);
   runApp(const MyApp());
   const int choresRemID = 0;
   await AndroidAlarmManager.periodic(const Duration(days: 1), choresRemID,

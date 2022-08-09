@@ -52,8 +52,8 @@ class NotificationService {
     var now = DateTime.now();
     var yesterdayAtMidNight = DateTime(now.year, now.month, now.day, 0, 1);
     await Hive.initFlutter();
-    await Hive.openBox<Chore>(boxName);
-    var box = Hive.box<Chore>(boxName);
+    await Hive.openBox<Chore>(choresBoxName);
+    var box = Hive.box<Chore>(choresBoxName);
     List<Chore> chores = box.values.toList();
     List<Chore> expiredChores = chores
         .where((chore) => chore.expiryDate.isBefore(yesterdayAtMidNight))

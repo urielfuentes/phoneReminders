@@ -32,24 +32,28 @@ class Home extends StatelessWidget {
                             color: Colors.red.shade400,
                             elevation: 2,
                             child: Center(
-                                child: Text("Recordatorio",
+                                child: Text("Recordatorios",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headline1))),
                       ),
                     ),
-                    InkWell(
-                      child: SizedBox(
-                        width: double.infinity,
-                        height: 100,
-                        child: Card(
-                            color: Colors.blue.shade400,
-                            elevation: 2,
-                            child: Center(
-                                child: Text("Registro",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline1))),
+                    Padding(
+                      padding: EdgeInsets.only(top: 16),
+                      child: InkWell(
+                        onTap: () => Navigator.pushNamed(context, '/records'),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 100,
+                          child: Card(
+                              color: Colors.blue.shade400,
+                              elevation: 2,
+                              child: Center(
+                                  child: Text("Registros",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline1))),
+                        ),
                       ),
                     )
                   ],
