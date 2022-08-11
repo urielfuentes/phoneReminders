@@ -34,8 +34,9 @@ void main() async {
   }
   await Hive.openBox<Record>(recordsBoxName);
   runApp(const MyApp());
+  await NotificationService.checkForExpiredChores();
   const int choresRemID = 0;
-  await AndroidAlarmManager.periodic(const Duration(minutes: 1), choresRemID,
+  await AndroidAlarmManager.periodic(const Duration(days: 1), choresRemID,
       NotificationService.checkForExpiredChores);
 }
 
@@ -46,7 +47,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Reminders',
       theme: appTheme,
       routes: appRoutes,
     );

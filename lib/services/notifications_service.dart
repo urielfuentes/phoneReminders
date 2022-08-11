@@ -47,7 +47,6 @@ class NotificationService {
   }
 
   static Future<void> checkForExpiredChores() async {
-    print("In notification callback.");
     var notifService = NotificationService();
     var now = DateTime.now();
     var yesterdayAtMidNight = DateTime(now.year, now.month, now.day, 0, 1);
