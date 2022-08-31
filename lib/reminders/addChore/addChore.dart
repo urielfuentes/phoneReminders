@@ -16,6 +16,8 @@ const timeScopes = <TimeScope, String>{
   TimeScope.years: "Años"
 };
 
+const noTag = "noTag";
+
 class AddChore extends StatefulWidget {
   final formKey = GlobalKey<FormState>();
   AddChore({Key? key}) : super(key: key);
@@ -27,8 +29,11 @@ class AddChore extends StatefulWidget {
 class _AddChoreState extends State<AddChore> {
   String name = "";
   String description = "";
+  bool addTag = false;
   int timeQuantity = 0;
   TimeScope timeScope = TimeScope.months;
+  List<String> tags = [];
+  String choreTag = noTag;
 
   String? timeQuantityValidator(value) {
     var quantity = int.tryParse(value ?? "");
@@ -45,6 +50,11 @@ class _AddChoreState extends State<AddChore> {
   void onFormSubmit() {
     if (widget.formKey.currentState?.validate() ?? false) {
       Box<Chore> choresBox = Hive.box<Chore>(choresBoxName);
+      if (choreTag != noTag) {
+        var tagBox = Hive.box<String>(tagsBoxName);
+        tagBox.put(choreTag, choreTag);
+      }
+
       var now = DateTime.now();
       var today = DateTime(now.year, now.month, now.day, 0, 0);
       var expiryTime = now;
@@ -63,13 +73,21 @@ class _AddChoreState extends State<AddChore> {
           break;
       }
       if (choresBox.keys.isNotEmpty) {
-        choresBox.add(
-            Chore(choresBox.keys.first + 1, name, description, expiryTime));
+        choresBox.add(Chore(
+            choresBox.keys.first + 1, name, description, choreTag, expiryTime));
       } else {
-        choresBox.add(Chore(0, name, description, expiryTime));
+        choresBox.add(Chore(0, name, description, choreTag, expiryTime));
       }
       Navigator.of(context).pop();
     }
+  }
+
+  @override
+  void initState() {
+    var box = Hive.box<String>(tagsBoxName);
+    setState(() {
+      tags = box.values.toList();
+    });
   }
 
   @override
@@ -146,6 +164,70 @@ class _AddChoreState extends State<AddChore> {
                 ),
               ],
             ),
+            Row(children: [
+              SizedBox(
+                width: 130,
+                child: DropdownButtonFormField(
+                  items: [
+                    ...tags
+                        .map((tag) => DropdownMenuItem<String>(
+                              value: tag,
+                              onTap: () => {
+                                setState(() {
+                                  addTag = false;
+                                })
+                              },
+                              child: Text(tag),
+                            ))
+                        .toList(),
+                    DropdownMenuItem<String>(
+                      value: noTag,
+                      onTap: () => {
+                        setState(() {
+                          addTag = true;
+                        })
+                      },
+                      child: const Text("Agregar"),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: noTag,
+                      onTap: () => {
+                        setState(() {
+                          addTag = false;
+                        })
+                      },
+                      child: const Text("Sin etiqueta"),
+                    )
+                  ],
+                  value: noTag,
+                  onChanged: (String? value) => {
+                    setState(() {
+                      choreTag = value ?? noTag;
+                    })
+                  },
+                ),
+              ),
+              if (addTag)
+                Container(
+                  width: 150,
+                  margin: const EdgeInsets.only(left: 12),
+                  child: TextFormField(
+                    initialValue: "",
+                    decoration: const InputDecoration(labelText: "Etiqueta"),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Ingresa una etiqueta.';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        choreTag = value;
+                      });
+                    },
+                  ),
+                ),
+            ]),
             Padding(
               padding: const EdgeInsets.only(top: 12),
               child: OutlinedButton(

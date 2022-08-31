@@ -9,8 +9,10 @@ class Chore {
   String name;
   @HiveField(2)
   String description;
-  @HiveField(3)
+  @HiveField(4)
+  String tag;
+  @HiveField(5)
   DateTime expiryDate;
 
-  Chore(this.id, this.name, this.description, this.expiryDate);
+  Chore(this.id, this.name, this.description, this.tag, this.expiryDate);
 }

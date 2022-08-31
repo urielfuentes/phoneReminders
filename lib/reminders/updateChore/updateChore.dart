@@ -40,7 +40,7 @@ class _UpdateChoreState extends State<UpdateChore> {
       var expiryTime = today
           .add(Duration(days: (days + weeks * 7 + months * 30 + years * 365)));
       choresBox.put(widget.choreKey,
-          Chore(widget.choreKey, name, description, expiryTime));
+          Chore(widget.choreKey, name, description, "temp", expiryTime));
       Navigator.of(context).pop();
     }
   }

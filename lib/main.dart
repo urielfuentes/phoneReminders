@@ -12,6 +12,7 @@ import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 const choresBoxName = "chores";
 const recordsBoxName = "records";
 const applicationName = "Reminders and Records";
+const tagsBoxName = "tags";
 
 void printHello() {
   final DateTime now = DateTime.now();
@@ -33,6 +34,7 @@ void main() async {
     Hive.registerAdapter(RecordAdapter());
   }
   await Hive.openBox<Record>(recordsBoxName);
+  await Hive.openBox<String>(tagsBoxName);
   runApp(const MyApp());
   await NotificationService.checkForExpiredChores();
   const int choresRemID = 0;
