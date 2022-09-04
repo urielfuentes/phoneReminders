@@ -16,6 +16,8 @@ var appTheme = ThemeData(
     ),
     headline1: TextStyle(
         fontWeight: FontWeight.bold, fontSize: 40, color: Colors.black87),
+    headline2: TextStyle(
+        fontWeight: FontWeight.bold, fontSize: 32, color: Colors.black87),
     subtitle1: TextStyle(
       color: Colors.black87,
     ),

@@ -1,13 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:choresreminder/main.dart';
-import 'package:choresreminder/reminders/updateChore/updateChore.dart';
-import 'package:choresreminder/services/date_service.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:choresreminder/models/chore.dart';
-
-import '../reminders/addChore/addChore.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);

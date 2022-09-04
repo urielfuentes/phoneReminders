@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:choresreminder/Common/constants.dart';
 import 'package:choresreminder/main.dart';
 import 'package:choresreminder/reminders/updateChore/updateChore.dart';
 import 'package:choresreminder/services/date_service.dart';
@@ -9,24 +10,25 @@ import 'package:choresreminder/models/chore.dart';
 
 class RemindersList extends StatelessWidget {
   final String tag;
-  const RemindersList({Key? key, this.tag = "noTag"}) : super(key: key);
+  const RemindersList({Key? key, this.tag = noTag}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Recordatorios.")),
+        appBar: AppBar(title: Text(tag == noTag ? noTagText : tag)),
         body: ValueListenableBuilder(
             valueListenable: Hive.box<Chore>(choresBoxName).listenable(),
             builder: (context, Box<Chore> box, _) {
-              if (box.values.isEmpty) {
-                return const Center(
-                  child: Text("Sin recordatorios."),
-                );
-              }
+              var temp = box.keys.toList();
               var orderedChores =
                   box.values.where((element) => element.tag == tag).toList();
               orderedChores
                   .sort((a, b) => a.expiryDate.compareTo(b.expiryDate));
+              if (orderedChores.isEmpty) {
+                return const Center(
+                  child: Text("Sin recordatorios."),
+                );
+              }
               return Padding(
                 padding: const EdgeInsets.all(15),
                 child: ListView.builder(
@@ -57,19 +59,20 @@ class RemindersList extends StatelessWidget {
                               PopupMenuItem(
                                 child: const Text("Eliminar"),
                                 onTap: () {
-                                  box.deleteAt(index);
+                                  box.delete(chore.id);
                                 },
                               ),
                               if (isDateNotExpired(chore.expiryDate))
                                 PopupMenuItem(
                                     child: const Text("Editar"),
-                                    onTap: () => Future(() =>
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) => UpdateChore(
-                                                    choreKey: box.keyAt(index),
-                                                  )),
-                                        ))),
+                                    onTap: () =>
+                                        Future(() => Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      UpdateChore(
+                                                        choreKey: chore.id,
+                                                      )),
+                                            ))),
                             ],
                           ),
                         ),

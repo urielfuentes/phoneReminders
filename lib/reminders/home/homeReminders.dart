@@ -5,6 +5,8 @@ import 'package:choresreminder/reminders/remindersList/remindersList.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../Common/ClickableCard.dart';
+
 class HomeReminders extends StatelessWidget {
   const HomeReminders({Key? key}) : super(key: key);
 
@@ -15,42 +17,18 @@ class HomeReminders extends StatelessWidget {
       body: ValueListenableBuilder(
           valueListenable: Hive.box<String>(tagsBoxName).listenable(),
           builder: (context, Box<String> box, _) {
-            if (box.values.isEmpty) {
-              return const Center(
-                child: Text("Sin recordatorios."),
-              );
-            }
             var tags = box.values.toList();
-            return Padding(
-              padding: const EdgeInsets.all(15),
-              child: ListView.builder(
-                  itemCount: box.length,
-                  itemBuilder: (context, index) {
-                    String tag = tags[index];
-                    return Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: InkWell(
-                        onTap: () => Future(() => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => RemindersList(
-                                        tag: tag,
-                                      )),
-                            )),
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: 100,
-                          child: Card(
-                              color: Colors.blue.shade400,
-                              elevation: 2,
-                              child: Center(
-                                  child: Text(tag,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline1))),
-                        ),
-                      ),
-                    );
-                  }),
+            return Column(
+              children: [
+                ClickableCard(tag: "noTag", title: "Sin etiqueta"),
+                ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: box.length,
+                    itemBuilder: (context, index) {
+                      String tag = tags[index];
+                      return ClickableCard(tag: tag);
+                    })
+              ],
             );
           }),
     );

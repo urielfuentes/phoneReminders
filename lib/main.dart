@@ -14,12 +14,6 @@ const recordsBoxName = "records";
 const applicationName = "Reminders and Records";
 const tagsBoxName = "tags";
 
-void printHello() {
-  final DateTime now = DateTime.now();
-  final int isolateId = Isolate.current.hashCode;
-  print("[$now] Hello, world! isolate=${isolateId} function='$printHello'");
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var notifService = NotificationService();

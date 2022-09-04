@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../Common/constants.dart';
 import '../../models/chore.dart';
 import '../../services/date_service.dart';
 
@@ -27,10 +28,13 @@ class UpdateChore extends StatefulWidget {
 class _UpdateChoreState extends State<UpdateChore> {
   String name = "";
   String description = "";
+  String updateTag = noTag;
   int days = 0;
   int weeks = 0;
   int months = 0;
   int years = 0;
+
+  List<String> tags = [];
 
   void onFormSubmit() {
     if (widget.formKey.currentState?.validate() ?? false) {
@@ -40,7 +44,7 @@ class _UpdateChoreState extends State<UpdateChore> {
       var expiryTime = today
           .add(Duration(days: (days + weeks * 7 + months * 30 + years * 365)));
       choresBox.put(widget.choreKey,
-          Chore(widget.choreKey, name, description, "temp", expiryTime));
+          Chore(widget.choreKey, name, description, updateTag, expiryTime));
       Navigator.of(context).pop();
     }
   }
@@ -51,6 +55,11 @@ class _UpdateChoreState extends State<UpdateChore> {
     Chore updateChore;
     updateChore = box.get(widget.choreKey)!;
     List<int> timeScopes = getScopeValues(updateChore.expiryDate);
+
+    var tagsBox = Hive.box<String>(tagsBoxName);
+    var tempTags = tagsBox.values.where((element) => element != noTag).toList();
+    tempTags.add(noTagText);
+
     setState(() {
       days = timeScopes[0];
       weeks = timeScopes[1];
@@ -58,6 +67,8 @@ class _UpdateChoreState extends State<UpdateChore> {
       years = timeScopes[3];
       name = updateChore.name;
       description = updateChore.description;
+      updateTag = updateChore.tag;
+      tags = tempTags;
     });
   }
 
@@ -96,6 +107,31 @@ class _UpdateChoreState extends State<UpdateChore> {
                     description = value;
                   });
                 }),
+            Row(children: [
+              SizedBox(
+                width: 130,
+                child: DropdownButtonFormField(
+                  items: [
+                    ...tags
+                        .map((tag) => DropdownMenuItem<String>(
+                              value: tag == noTagText ? noTag : tag,
+                              child: Text(tag),
+                            ))
+                        .toList(),
+                  ],
+                  value: updateTag,
+                  onChanged: (String? value) => {
+                    setState(() {
+                      if (value == noTagText) {
+                        updateTag = noTag;
+                      } else {
+                        updateTag = value ?? noTag;
+                      }
+                    })
+                  },
+                ),
+              ),
+            ]),
             Column(children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,

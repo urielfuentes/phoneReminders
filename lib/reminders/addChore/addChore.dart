@@ -5,6 +5,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../Common/constants.dart';
 import '../../models/chore.dart';
 
 enum TimeScope { days, weeks, months, years }
@@ -15,8 +16,6 @@ const timeScopes = <TimeScope, String>{
   TimeScope.months: "Meses",
   TimeScope.years: "Años"
 };
-
-const noTag = "noTag";
 
 class AddChore extends StatefulWidget {
   final formKey = GlobalKey<FormState>();
@@ -73,10 +72,12 @@ class _AddChoreState extends State<AddChore> {
           break;
       }
       if (choresBox.keys.isNotEmpty) {
-        choresBox.add(Chore(
-            choresBox.keys.first + 1, name, description, choreTag, expiryTime));
+        choresBox.put(
+            choresBox.keys.last + 1,
+            Chore(choresBox.keys.last + 1, name, description, choreTag,
+                expiryTime));
       } else {
-        choresBox.add(Chore(0, name, description, choreTag, expiryTime));
+        choresBox.put(0, Chore(0, name, description, choreTag, expiryTime));
       }
       Navigator.of(context).pop();
     }
@@ -86,7 +87,7 @@ class _AddChoreState extends State<AddChore> {
   void initState() {
     var box = Hive.box<String>(tagsBoxName);
     setState(() {
-      tags = box.values.toList();
+      tags = box.values.where((element) => element != noTag).toList();
     });
   }
 
@@ -184,20 +185,20 @@ class _AddChoreState extends State<AddChore> {
                       value: noTag,
                       onTap: () => {
                         setState(() {
+                          addTag = false;
+                        })
+                      },
+                      child: const Text(noTagText),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: "",
+                      onTap: () => {
+                        setState(() {
                           addTag = true;
                         })
                       },
                       child: const Text("Agregar"),
                     ),
-                    DropdownMenuItem<String>(
-                      value: noTag,
-                      onTap: () => {
-                        setState(() {
-                          addTag = false;
-                        })
-                      },
-                      child: const Text("Sin etiqueta"),
-                    )
                   ],
                   value: noTag,
                   onChanged: (String? value) => {
