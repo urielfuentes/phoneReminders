@@ -49,10 +49,9 @@ class _AddChoreState extends State<AddChore> {
   void onFormSubmit() {
     if (widget.formKey.currentState?.validate() ?? false) {
       Box<Chore> choresBox = Hive.box<Chore>(choresBoxName);
-      if (choreTag != noTag) {
-        var tagBox = Hive.box<String>(tagsBoxName);
-        tagBox.put(choreTag, choreTag);
-      }
+
+      var tagBox = Hive.box<String>(tagsBoxName);
+      tagBox.put(choreTag, choreTag);
 
       var now = DateTime.now();
       var today = DateTime(now.year, now.month, now.day, 0, 0);
@@ -85,9 +84,8 @@ class _AddChoreState extends State<AddChore> {
 
   @override
   void initState() {
-    var box = Hive.box<String>(tagsBoxName);
     setState(() {
-      tags = box.values.where((element) => element != noTag).toList();
+      tags = Hive.box<String>(tagsBoxName).values.toList();
     });
   }
 
@@ -178,18 +176,9 @@ class _AddChoreState extends State<AddChore> {
                                   addTag = false;
                                 })
                               },
-                              child: Text(tag),
+                              child: Text(tag == noTag ? noTagText : tag),
                             ))
                         .toList(),
-                    DropdownMenuItem<String>(
-                      value: noTag,
-                      onTap: () => {
-                        setState(() {
-                          addTag = false;
-                        })
-                      },
-                      child: const Text(noTagText),
-                    ),
                     DropdownMenuItem<String>(
                       value: "",
                       onTap: () => {

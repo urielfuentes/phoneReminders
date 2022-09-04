@@ -33,6 +33,7 @@ class _UpdateChoreState extends State<UpdateChore> {
   int weeks = 0;
   int months = 0;
   int years = 0;
+  bool addTag = false;
 
   List<String> tags = [];
 
@@ -43,6 +44,8 @@ class _UpdateChoreState extends State<UpdateChore> {
       var today = DateTime(now.year, now.month, now.day, 0, 0);
       var expiryTime = today
           .add(Duration(days: (days + weeks * 7 + months * 30 + years * 365)));
+      var tagBox = Hive.box<String>(tagsBoxName);
+      tagBox.put(updateTag, updateTag);
       choresBox.put(widget.choreKey,
           Chore(widget.choreKey, name, description, updateTag, expiryTime));
       Navigator.of(context).pop();
@@ -115,22 +118,52 @@ class _UpdateChoreState extends State<UpdateChore> {
                     ...tags
                         .map((tag) => DropdownMenuItem<String>(
                               value: tag == noTagText ? noTag : tag,
+                              onTap: () => {
+                                setState(() {
+                                  addTag = false;
+                                })
+                              },
                               child: Text(tag),
                             ))
                         .toList(),
+                    DropdownMenuItem<String>(
+                      value: "",
+                      onTap: () => {
+                        setState(() {
+                          addTag = true;
+                        })
+                      },
+                      child: const Text("Agregar"),
+                    ),
                   ],
-                  value: updateTag,
+                  value: noTag,
                   onChanged: (String? value) => {
                     setState(() {
-                      if (value == noTagText) {
-                        updateTag = noTag;
-                      } else {
-                        updateTag = value ?? noTag;
-                      }
+                      updateTag = value ?? noTag;
                     })
                   },
                 ),
               ),
+              if (addTag)
+                Container(
+                  width: 150,
+                  margin: const EdgeInsets.only(left: 12),
+                  child: TextFormField(
+                    initialValue: "",
+                    decoration: const InputDecoration(labelText: "Etiqueta"),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Ingresa una etiqueta.';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        updateTag = value;
+                      });
+                    },
+                  ),
+                ),
             ]),
             Column(children: [
               Row(

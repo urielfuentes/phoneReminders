@@ -6,6 +6,7 @@ import 'package:choresreminder/theme.dart';
 import 'package:choresreminder/services/notifications_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'Common/constants.dart';
 import 'models/chore.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 
@@ -29,6 +30,9 @@ void main() async {
   }
   await Hive.openBox<Record>(recordsBoxName);
   await Hive.openBox<String>(tagsBoxName);
+  var tagsBox = Hive.box<String>(tagsBoxName);
+  tagsBox.put(noTag, noTag);
+
   runApp(const MyApp());
   await NotificationService.checkForExpiredChores();
   const int choresRemID = 0;

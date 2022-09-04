@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../Common/ClickableCard.dart';
+import '../../Common/constants.dart';
 
 class HomeReminders extends StatelessWidget {
   const HomeReminders({Key? key}) : super(key: key);
@@ -20,7 +21,6 @@ class HomeReminders extends StatelessWidget {
             var tags = box.values.toList();
             return Column(
               children: [
-                ClickableCard(tag: "noTag", title: "Sin etiqueta"),
                 ListView.builder(
                     shrinkWrap: true,
                     itemCount: box.length,
