@@ -5,6 +5,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../Common/constants.dart';
 import '../../models/chore.dart';
 import '../../models/record.dart';
 
@@ -19,7 +20,8 @@ const timeScopes = <TimeScope, String>{
 
 class AddRecord extends StatefulWidget {
   final formKey = GlobalKey<FormState>();
-  AddRecord({Key? key}) : super(key: key);
+  final String launcherTag;
+  AddRecord({Key? key, this.launcherTag = noTag}) : super(key: key);
 
   @override
   State<AddRecord> createState() => _AddRecordState();
@@ -28,20 +30,35 @@ class AddRecord extends StatefulWidget {
 class _AddRecordState extends State<AddRecord> {
   String name = "";
   String description = "";
+  bool addTag = false;
+  List<String> tags = [];
+  String recordTag = noTag;
+
   void onFormSubmit() {
     if (widget.formKey.currentState?.validate() ?? false) {
       Box<Record> recordsBox = Hive.box<Record>(recordsBoxName);
+      var tagBox = Hive.box<String>(recordsTagsBoxName);
+      tagBox.put(recordTag, recordTag);
       var now = DateTime.now();
       var today = DateTime(now.year, now.month, now.day, 0, 0);
       var expiryTime = today;
       if (recordsBox.keys.isNotEmpty) {
-        recordsBox.add(
-            Record(recordsBox.keys.first + 1, name, description, expiryTime));
+        recordsBox.put(
+            recordsBox.keys.last + 1,
+            Record(recordsBox.keys.last + 1, name, description, expiryTime,
+                recordTag));
       } else {
-        recordsBox.add(Record(0, name, description, expiryTime));
+        recordsBox.put(0, Record(0, name, description, expiryTime, recordTag));
       }
       Navigator.of(context).pop();
     }
+  }
+
+  @override
+  void initState() {
+    setState(() {
+      tags = Hive.box<String>(recordsTagsBoxName).values.toList();
+    });
   }
 
   @override
@@ -79,6 +96,61 @@ class _AddRecordState extends State<AddRecord> {
                     description = value;
                   });
                 }),
+            Row(children: [
+              SizedBox(
+                width: 130,
+                child: DropdownButtonFormField(
+                  items: [
+                    ...tags
+                        .map((tag) => DropdownMenuItem<String>(
+                              value: tag,
+                              onTap: () => {
+                                setState(() {
+                                  addTag = false;
+                                })
+                              },
+                              child: Text(tag == noTag ? noTagText : tag),
+                            ))
+                        .toList(),
+                    DropdownMenuItem<String>(
+                      value: "",
+                      onTap: () => {
+                        setState(() {
+                          addTag = true;
+                        })
+                      },
+                      child: const Text("Agregar"),
+                    ),
+                  ],
+                  value: widget.launcherTag,
+                  onChanged: (String? value) => {
+                    setState(() {
+                      recordTag = value ?? noTag;
+                    })
+                  },
+                ),
+              ),
+              if (addTag)
+                Container(
+                  width: 150,
+                  margin: const EdgeInsets.only(left: 12),
+                  child: TextFormField(
+                    initialValue: "",
+                    decoration: const InputDecoration(labelText: "Etiqueta"),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Ingresa una etiqueta.';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        recordTag = value;
+                      });
+                    },
+                  ),
+                ),
+            ]),
             Padding(
               padding: const EdgeInsets.only(top: 12),
               child: OutlinedButton(

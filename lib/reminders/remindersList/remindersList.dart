@@ -2,6 +2,7 @@
 
 import 'package:choresreminder/Common/constants.dart';
 import 'package:choresreminder/main.dart';
+import 'package:choresreminder/reminders/addChore/addChore.dart';
 import 'package:choresreminder/reminders/updateChore/updateChore.dart';
 import 'package:choresreminder/services/date_service.dart';
 import 'package:flutter/material.dart';
@@ -84,9 +85,12 @@ class RemindersList extends StatelessWidget {
           builder: (context) {
             return FloatingActionButton(
               child: const Icon(Icons.add),
-              onPressed: () {
-                Navigator.pushNamed(context, '/addReminder');
-              },
+              onPressed: () => Future(() => Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => AddChore(
+                              launcherTag: tag,
+                            )),
+                  )),
             );
           },
         ));

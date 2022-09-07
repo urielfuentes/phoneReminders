@@ -11,6 +11,8 @@ class Record {
   String description;
   @HiveField(3)
   DateTime entryDate;
+  @HiveField(4)
+  String tag;
 
-  Record(this.id, this.name, this.description, this.entryDate);
+  Record(this.id, this.name, this.description, this.entryDate, this.tag);
 }

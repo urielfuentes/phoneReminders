@@ -1,11 +1,14 @@
 import 'package:choresreminder/Common/constants.dart';
+import 'package:choresreminder/records/list/recordsList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../reminders/remindersList/remindersList.dart';
 
 class ClickableCard extends StatelessWidget {
-  const ClickableCard({Key? key, required this.tag}) : super(key: key);
+  final bool reminderCard;
+  const ClickableCard({Key? key, required this.tag, this.reminderCard = true})
+      : super(key: key);
 
   final String tag;
 
@@ -15,10 +18,17 @@ class ClickableCard extends StatelessWidget {
       padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
       child: InkWell(
         onTap: () => Future(() => Navigator.of(context).push(
-              MaterialPageRoute(
-                  builder: (context) => RemindersList(
-                        tag: tag,
-                      )),
+              MaterialPageRoute(builder: (context) {
+                if (reminderCard) {
+                  return RemindersList(
+                    tag: tag,
+                  );
+                } else {
+                  return RecordsList(
+                    tag: tag,
+                  );
+                }
+              }),
             )),
         child: SizedBox(
           width: double.infinity,

@@ -14,6 +14,7 @@ const choresBoxName = "chores";
 const recordsBoxName = "records";
 const applicationName = "Reminders and Records";
 const tagsBoxName = "tags";
+const recordsTagsBoxName = "recordsTags";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +33,9 @@ void main() async {
   await Hive.openBox<String>(tagsBoxName);
   var tagsBox = Hive.box<String>(tagsBoxName);
   tagsBox.put(noTag, noTag);
+  await Hive.openBox<String>(recordsTagsBoxName);
+  var recordsTagsBox = Hive.box<String>(recordsTagsBoxName);
+  recordsTagsBox.put(noTag, noTag);
 
   runApp(const MyApp());
   await NotificationService.checkForExpiredChores();

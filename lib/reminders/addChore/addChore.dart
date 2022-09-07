@@ -19,7 +19,8 @@ const timeScopes = <TimeScope, String>{
 
 class AddChore extends StatefulWidget {
   final formKey = GlobalKey<FormState>();
-  AddChore({Key? key}) : super(key: key);
+  final String launcherTag;
+  AddChore({Key? key, this.launcherTag = noTag}) : super(key: key);
 
   @override
   State<AddChore> createState() => _AddChoreState();
@@ -189,7 +190,7 @@ class _AddChoreState extends State<AddChore> {
                       child: const Text("Agregar"),
                     ),
                   ],
-                  value: noTag,
+                  value: widget.launcherTag,
                   onChanged: (String? value) => {
                     setState(() {
                       choreTag = value ?? noTag;
