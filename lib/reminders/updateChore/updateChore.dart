@@ -29,6 +29,7 @@ class _UpdateChoreState extends State<UpdateChore> {
   String name = "";
   String description = "";
   String updateTag = noTag;
+  String initTag = noTag;
   int days = 0;
   int weeks = 0;
   int months = 0;
@@ -71,6 +72,7 @@ class _UpdateChoreState extends State<UpdateChore> {
       name = updateChore.name;
       description = updateChore.description;
       updateTag = updateChore.tag;
+      initTag = updateTag;
       tags = tempTags;
     });
   }
@@ -136,7 +138,7 @@ class _UpdateChoreState extends State<UpdateChore> {
                       child: const Text("Agregar"),
                     ),
                   ],
-                  value: noTag,
+                  value: initTag,
                   onChanged: (String? value) => {
                     setState(() {
                       updateTag = value ?? noTag;

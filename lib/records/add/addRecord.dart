@@ -58,6 +58,7 @@ class _AddRecordState extends State<AddRecord> {
   void initState() {
     setState(() {
       tags = Hive.box<String>(recordsTagsBoxName).values.toList();
+      recordTag = widget.launcherTag;
     });
   }
 

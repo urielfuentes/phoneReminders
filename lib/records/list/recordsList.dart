@@ -17,7 +17,7 @@ class RecordsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Registros.")),
+        appBar: AppBar(title: Text(tag)),
         body: ValueListenableBuilder(
             valueListenable: Hive.box<Record>(recordsBoxName).listenable(),
             builder: (context, Box<Record> box, _) {
@@ -64,13 +64,14 @@ class RecordsList extends StatelessWidget {
                               ),
                               PopupMenuItem(
                                   child: const Text("Editar"),
-                                  onTap: () => Future(() =>
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) => UpdateRecord(
-                                                  recordKey: box.keyAt(index),
-                                                )),
-                                      ))),
+                                  onTap: () =>
+                                      Future(() => Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    UpdateRecord(
+                                                      recordKey: record.id,
+                                                    )),
+                                          ))),
                             ],
                           ),
                         ),

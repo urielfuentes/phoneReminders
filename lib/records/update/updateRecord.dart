@@ -1,10 +1,9 @@
 import 'package:choresreminder/main.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../../models/chore.dart';
+import '../../Common/constants.dart';
 import '../../models/record.dart';
 import '../../services/date_service.dart';
 
@@ -20,13 +19,18 @@ class UpdateRecord extends StatefulWidget {
 }
 
 class _UpdateRecordState extends State<UpdateRecord> {
-  Record recordToUpdateCopy = Record(0, "", "", DateTime.now());
+  Record recordToUpdate = Record(0, "", "", DateTime.now(), noTag);
   String dateString = "";
+  String initTag = noTag;
+  List<String> tags = [];
+  bool addTag = false;
 
   void onFormSubmit() {
     if (widget.formKey.currentState?.validate() ?? false) {
+      var tagBox = Hive.box<String>(recordsTagsBoxName);
+      tagBox.put(recordToUpdate.tag, recordToUpdate.tag);
       Box<Record> recordsBox = Hive.box<Record>(recordsBoxName);
-      recordsBox.put(widget.recordKey, recordToUpdateCopy);
+      recordsBox.put(widget.recordKey, recordToUpdate);
       Navigator.of(context).pop();
     }
   }
@@ -34,11 +38,15 @@ class _UpdateRecordState extends State<UpdateRecord> {
   @override
   void initState() {
     var box = Hive.box<Record>(recordsBoxName);
-    Record recordToUpdate;
-    recordToUpdate = box.get(widget.recordKey)!;
+    var tagsBox = Hive.box<String>(recordsTagsBoxName);
+    var tempTags = tagsBox.values.where((element) => element != noTag).toList();
+    tempTags.add(noTagText);
+
     setState(() {
-      recordToUpdateCopy = recordToUpdate;
+      recordToUpdate = box.get(widget.recordKey)!;
       dateString = "Fecha: ${getDateStringRecord(recordToUpdate.entryDate)}";
+      tags = tempTags;
+      initTag = recordToUpdate.tag;
     });
   }
 
@@ -56,7 +64,7 @@ class _UpdateRecordState extends State<UpdateRecord> {
           children: <Widget>[
             TextFormField(
                 autofocus: true,
-                initialValue: recordToUpdateCopy.name,
+                initialValue: recordToUpdate.name,
                 decoration: const InputDecoration(labelText: "Nombre"),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -66,15 +74,15 @@ class _UpdateRecordState extends State<UpdateRecord> {
                 },
                 onChanged: (value) {
                   setState(() {
-                    recordToUpdateCopy.name = value;
+                    recordToUpdate.name = value;
                   });
                 }),
             TextFormField(
-                initialValue: recordToUpdateCopy.description,
+                initialValue: recordToUpdate.description,
                 decoration: const InputDecoration(labelText: "Descripción"),
                 onChanged: (value) {
                   setState(() {
-                    recordToUpdateCopy.description = value;
+                    recordToUpdate.description = value;
                   });
                 }),
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -85,12 +93,12 @@ class _UpdateRecordState extends State<UpdateRecord> {
                 onTap: () async {
                   var newDate = await showDatePicker(
                       context: context,
-                      initialDate: recordToUpdateCopy.entryDate,
+                      initialDate: recordToUpdate.entryDate,
                       firstDate: DateTime(2000),
                       lastDate: DateTime(2100));
                   if (newDate == null) return;
                   setState(() {
-                    recordToUpdateCopy.entryDate = DateTime(
+                    recordToUpdate.entryDate = DateTime(
                         newDate.year, newDate.month, newDate.day, 0, 0);
                     dateString = "Fecha: ${getDateStringRecord(newDate)}";
                   });
@@ -103,6 +111,61 @@ class _UpdateRecordState extends State<UpdateRecord> {
                   ),
                 ),
               )
+            ]),
+            Row(children: [
+              SizedBox(
+                width: 130,
+                child: DropdownButtonFormField(
+                  items: [
+                    ...tags
+                        .map((tag) => DropdownMenuItem<String>(
+                              value: tag == noTagText ? noTag : tag,
+                              onTap: () => {
+                                setState(() {
+                                  addTag = false;
+                                })
+                              },
+                              child: Text(tag),
+                            ))
+                        .toList(),
+                    DropdownMenuItem<String>(
+                      value: "",
+                      onTap: () => {
+                        setState(() {
+                          addTag = true;
+                        })
+                      },
+                      child: const Text("Agregar"),
+                    ),
+                  ],
+                  value: initTag,
+                  onChanged: (String? value) => {
+                    setState(() {
+                      recordToUpdate.tag = value ?? noTag;
+                    })
+                  },
+                ),
+              ),
+              if (addTag)
+                Container(
+                  width: 150,
+                  margin: const EdgeInsets.only(left: 12),
+                  child: TextFormField(
+                    initialValue: "",
+                    decoration: const InputDecoration(labelText: "Etiqueta"),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Ingresa una etiqueta.';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        recordToUpdate.tag = value;
+                      });
+                    },
+                  ),
+                ),
             ]),
             Padding(
               padding: const EdgeInsets.only(top: 12),

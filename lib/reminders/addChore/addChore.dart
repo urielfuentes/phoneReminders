@@ -87,6 +87,7 @@ class _AddChoreState extends State<AddChore> {
   void initState() {
     setState(() {
       tags = Hive.box<String>(tagsBoxName).values.toList();
+      choreTag = widget.launcherTag;
     });
   }
 
