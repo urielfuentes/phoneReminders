@@ -17,7 +17,7 @@ class RecordsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(tag)),
+        appBar: AppBar(title: Text(tag == noTag ? noTagText : tag)),
         body: ValueListenableBuilder(
             valueListenable: Hive.box<Record>(recordsBoxName).listenable(),
             builder: (context, Box<Record> box, _) {
