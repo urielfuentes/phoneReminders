@@ -43,9 +43,13 @@ class ClickableCard extends StatelessWidget {
                 title: Text(tag == noTag ? noTagText : tag,
                     style: Theme.of(context).textTheme.headline2),
                 trailing: InkWell(
-                  child: const Icon(
-                    FontAwesomeIcons.trash,
-                    size: 18,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      FittedBox(
+                        child: Icon(FontAwesomeIcons.trash),
+                      )
+                    ],
                   ),
                   onTap: () {
                     if (reminderCard) {
